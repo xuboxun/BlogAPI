@@ -1,0 +1,35 @@
+{
+    "extends": "tslint:recommended",
+    "linterOptions": {
+        "exclude": [
+            "src"
+        ]
+    },
+    "rules": {
+        "max-line-length": false,
+        "new-parens": true,
+        "no-arg": true,
+        "no-bitwise": true,
+        "no-conditional-assignment": true,
+        "object-literal-sort-keys": false,
+        "no-consecutive-blank-lines": false,
+        "ban-types": false,
+        "trailing-comma": false,
+        "no-console": {
+            "severity": "warning",
+            "options": [
+                "debug",
+                "info",
+                "log",  
+                "time",
+                "timeEnd",
+                "trace"
+            ]
+        },
+        "indent": [true, "spaces", 4],
+        "quotemark": [true, "single", "jsx-double"],
+        "semicolon": [true, "always"],
+        "no-empty": false
+
+    }
+}
