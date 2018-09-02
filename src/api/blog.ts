@@ -4,7 +4,7 @@ import * as Router from 'koa-router';
 import ResData from '../interface/ResData';
 
 
-const list: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: Context, next: Function): Promise<ResData> => {
+const list = async (ctx: Context, next: Function): Promise<ResData> => {
     ctx.body = {
         code: 200,
         msg: 'list',
@@ -17,7 +17,7 @@ const list: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: Con
     return ctx.body;
 };
 
-const detail: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: Context, next: Function) => {
+const detail = async (ctx: Context, next: Function): Promise<ResData> => {
     const data = ctx.request.query;
     ctx.body = {
         title: 'title',

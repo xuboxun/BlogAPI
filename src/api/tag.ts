@@ -1,8 +1,9 @@
 import { Context } from 'koa';
+import * as Router from 'koa-router';
 import ResData from '../interface/ResData';
 import ITag from '../interface/Tag';
 
-const getTag: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: Context, next: Function): Promise<ResData> => {
+const getTag = async (ctx: Context, next: Function): Promise<ResData> => {
     ctx.body = {
         code: 200,
         msg: 'getTag',
@@ -14,7 +15,7 @@ const getTag: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: C
 
 
 
-const getTags: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: Context, next: Function): Promise<ResData> => {
+const getTags = async (ctx: Context, next: Function): Promise<ResData> => {
     ctx.body = {
         code: 200,
         msg: 'getTag',
@@ -22,4 +23,10 @@ const getTags: (ctx: Context, next: Function) => Promise<ResData> = async (ctx: 
     };
 
     return ctx.body;
+};
+
+
+export let register = (router: Router) => {
+    router.get('/tag', getTag);
+    router.get('/taglist', getTags);
 };
