@@ -7,6 +7,9 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "outDir": "dist",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "resolveJsonModule": true
     },
     "include": [
         "src/**/*"
