@@ -1,7 +1,0 @@
-{
-    "database": {
-        "name": "blog",
-        "user": "root",
-        "password": "test"
-    }
-}
