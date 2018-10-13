@@ -1,8 +1,8 @@
 /**
- * 标签分类
+ * 专栏
  */
 
-export default interface ITag {
+export default interface ISerial {
     id: string;
     name: string;
     title: string;

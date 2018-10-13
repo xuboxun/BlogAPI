@@ -3,11 +3,13 @@
  */
 
 export default interface IBlog {
-    id: number; // 唯一标识
+    id: string; // 唯一标识
     title: string; // 题目
     content: string; // 内容
 
-    tagId: number[];
+    type: string; // 博客类型： tech culture serial
+    tags: object[]; // 所属标签列表 {name, title}
+    serial: string; // 所属专栏
 
     weather: string; // 天气
     location: string; // 地点

@@ -1,34 +1,44 @@
 import { Context } from 'koa';
-import * as Router from 'koa-router';
 import ResData from '../interface/ResData';
 import ITag from '../interface/Tag';
 import { Tag as TagModel} from '../models/Tag';
 
 
-const getTag = async (ctx: Context, next: Function): Promise<ResData> => {
-    ctx.body = {
+const getTagDetail = async (ctx: Context): Promise<ResData> => {
+    const data = {
         code: 200,
         msg: 'getTag',
-        data: null,
+        result: {},
     };
 
-    return ctx.body;
+    return data;
 };
 
-const getTags = async (ctx: Context, next: Function): Promise<ResData> => {
-    let data: any = await TagModel.findAll();
-    console.log(data);
-    ctx.body = {
+const getTagList = async (ctx: Context): Promise<ResData> => {
+    let tags: any = await TagModel.findAll();
+    const data = {
         code: 200,
         msg: 'getTag',
-        data,
+        result: {
+            items: tags,
+            total: 100
+        },
     };
 
-    return ctx.body;
+    return data;
 };
 
 
-export let register = (router: Router) => {
-    router.get('/tag', getTag);
-    router.get('/taglist', getTags);
-};
+const tagRouterConfig = [
+    {
+        method: 'get',
+        url: '/tag/detail',
+        handle: getTagDetail
+    },
+    {
+        method: 'get',
+        url: '/tag/list',
+        handle: getTagList
+    }
+];
+export default tagRouterConfig;

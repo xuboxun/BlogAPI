@@ -12,10 +12,4 @@ app
     .use(router.routes())
     .use(router.allowedMethods());
 
-
-// response
-app.use(async (ctx: Koa.Context) => {
-    ctx.body = '404';
-});
-
 app.listen(3000);
