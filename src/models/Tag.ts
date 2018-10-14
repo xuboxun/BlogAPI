@@ -8,7 +8,7 @@ import {
 @Table({
     tableName: 'tag'
 })
-export class Tag extends Model<Tag> {
+class Tag extends Model<Tag> {
 
     @PrimaryKey
     @Column({
@@ -28,3 +28,5 @@ export class Tag extends Model<Tag> {
     @Column
     create_time: Date;
 }
+
+export default Tag;

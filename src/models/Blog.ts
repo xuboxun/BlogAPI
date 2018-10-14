@@ -6,9 +6,9 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-    tableName: 'bog'
+    tableName: 'blog'
 })
-export class Blog extends Model<Blog> {
+class BlogModel extends Model<BlogModel> {
 
     @PrimaryKey
     @Column({
@@ -23,8 +23,13 @@ export class Blog extends Model<Blog> {
     title: string;
 
     @Column
+    type: string;
+
+    @Column
     content: string;
 
     @Column
     create_time: Date;
 }
+
+export default BlogModel;
