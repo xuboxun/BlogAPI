@@ -1,11 +1,28 @@
 import { Sequelize } from 'sequelize-typescript';
-import CONFIG from '../config';
+import config from '../config';
 
-export const sequelize = new Sequelize({
+const sequelize = new Sequelize({
     dialect: 'mysql',
     operatorsAliases: Sequelize.Op as any,
-    database: CONFIG.database.name,
-    username: CONFIG.database.user,
-    password: CONFIG.database.password,
+    host: config.db.host,
+    port: config.db.port,
+    database: config.db.database,
+    username: config.db.username,
+    password: config.db.password,
     modelPaths: [__dirname + '/models']
 });
+
+sequelize.authenticate()
+    .then((/* err */) => {
+        console.log('----------------------------------------');
+        console.log('DATABASE √');
+        console.log('    HOST     %s', config.db.host);
+        console.log('    PORT     %s', config.db.port);
+        console.log('    DATABASE %s', config.db.database);
+        console.log('----------------------------------------');
+    })
+    .catch(err => {
+        console.log('Unable to connect to the database:', err);
+    });
+
+export default sequelize;

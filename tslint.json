@@ -15,17 +15,7 @@
         "no-consecutive-blank-lines": false,
         "ban-types": false,
         "trailing-comma": false,
-        "no-console": {
-            "severity": "warning",
-            "options": [
-                "debug",
-                "info",
-                "log",  
-                "time",
-                "timeEnd",
-                "trace"
-            ]
-        },
+        "no-console": false,
         "indent": [true, "spaces", 4],
         "quotemark": [true, "single", "jsx-double"],
         "semicolon": [true, "always"],
