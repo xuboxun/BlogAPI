@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import ResData from '../interface/ResData';
 import ITag from '../interface/Tag';
-import TagModel from '../models/Tag';
+import TagModel from '../models/table/Tag';
 
 
 const getTagDetail = async (ctx: Context): Promise<ResData> => {
@@ -32,13 +32,13 @@ const getTagList = async (ctx: Context): Promise<ResData> => {
 const tagRouterConfig = [
     {
         method: 'get',
-        url: '/tag/detail',
-        handle: getTagDetail
+        url: '/tag/list',
+        handle: getTagList
     },
     {
         method: 'get',
-        url: '/tag/list',
-        handle: getTagList
+        url: '/tag/detail',
+        handle: getTagDetail
     }
 ];
 export default tagRouterConfig;

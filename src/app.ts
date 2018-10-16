@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import router from './router';
-import sequelize from './sequelize';
+import sequelize from './models/sequelize';
 
 const app = new Koa();
 

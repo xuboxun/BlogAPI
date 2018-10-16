@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import config from '../config';
+import config from '../../config/index';
 
 const sequelize = new Sequelize({
     dialect: 'mysql',
@@ -9,7 +9,7 @@ const sequelize = new Sequelize({
     database: config.db.database,
     username: config.db.username,
     password: config.db.password,
-    modelPaths: [__dirname + '/models']
+    modelPaths: [__dirname + '/table']
 });
 
 sequelize.authenticate()
