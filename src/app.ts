@@ -1,11 +1,10 @@
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
+import { connect } from './models';
 import router from './router';
-import sequelize from './models/sequelize';
 
 const app = new Koa();
-
-sequelize.sync();
+connect();
 
 app
     .use(bodyParser())

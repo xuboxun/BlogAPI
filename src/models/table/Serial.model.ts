@@ -6,13 +6,13 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-    tableName: 'tag'
+    tableName: 'serial'
 })
-class Tag extends Model<Tag> {
+class SerialModel extends Model<SerialModel> {
 
     @PrimaryKey
     @Column({
-        comment: '标签id',
+        comment: '专栏id',
     })
     id: string;
 
@@ -29,4 +29,4 @@ class Tag extends Model<Tag> {
     create_time: Date;
 }
 
-export default Tag;
+export default SerialModel;

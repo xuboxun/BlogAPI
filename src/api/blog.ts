@@ -1,9 +1,9 @@
 import { Context } from 'koa';
 import { Sequelize } from 'sequelize-typescript';
 import ResData from '../interface/ResData';
-import BlogModel from '../models/table/Blog';
-import TagModel from '../models/table/Tag';
-import BlogTagModel from '../models/table/BlogTag';
+import { BlogModel } from '../models';
+import { TagModel } from '../models';
+import { BlogTagModel } from '../models';
 
 
 const getBlogList = async (ctx: Context): Promise<ResData> => {

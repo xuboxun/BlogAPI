@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import ResData from '../interface/ResData';
 import ITag from '../interface/Tag';
-import TagModel from '../models/table/Tag';
+import TagModel from '../models/table/Tag.model';
 
 
 const getTagDetail = async (ctx: Context): Promise<ResData> => {

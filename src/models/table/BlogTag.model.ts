@@ -8,7 +8,7 @@ import {
 @Table({
     tableName: 'blog_tag'
 })
-class BlogTag extends Model<BlogTag> {
+class BlogTagModel extends Model<BlogTagModel> {
 
     @PrimaryKey
     @Column
@@ -21,4 +21,4 @@ class BlogTag extends Model<BlogTag> {
     tag_id: string;
 }
 
-export default BlogTag;
+export default BlogTagModel;
