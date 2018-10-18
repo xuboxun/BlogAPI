@@ -1,9 +1,7 @@
 import { Context } from 'koa';
 import { Sequelize } from 'sequelize-typescript';
 import ResData from '../interface/ResData';
-import { BlogModel } from '../models';
-import { TagModel } from '../models';
-import { BlogTagModel } from '../models';
+import { BlogModel, BlogTagModel, TagModel } from '../models';
 
 
 const getBlogList = async (ctx: Context): Promise<ResData> => {
@@ -11,7 +9,8 @@ const getBlogList = async (ctx: Context): Promise<ResData> => {
         pageSize: +ctx.query.pageSize || 10,
         pageNum: +ctx.query.pageNum || 1
     };
-    let blogList = [];
+    let blogList = [],
+        total = 0;
 
     const queryBlogList = await BlogModel.findAll({
         attributes: ['id', 'name', 'title', 'type', 'create_time'],
@@ -20,16 +19,15 @@ const getBlogList = async (ctx: Context): Promise<ResData> => {
         order: [ ['create_time', 'DESC'] ],
         where: {
             type: 'tech'
-        }
+        },
+        include: [{
+            model: TagModel,
+            attributes: ['id', 'title', 'name']
+        }]
     });
+
     for(let i = 0; i < queryBlogList.length; i++) {
         const item = queryBlogList[i];
-        const tags = await BlogTagModel.findAll({
-            attributes: ['tag_id'],
-            where: {
-                blog_id: item.id
-            }
-        });
 
         blogList.push({
             id: item.id,
@@ -38,10 +36,10 @@ const getBlogList = async (ctx: Context): Promise<ResData> => {
             type: item.type,
             content: item.content,
             createTime: item.create_time,
-            tags: tags
+            tags: item.tags
         });
     }
-    const total = await BlogModel.count({
+    total = await BlogModel.count({
         where: {
             type: 'tech'
         }

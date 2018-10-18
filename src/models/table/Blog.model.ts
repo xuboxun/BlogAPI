@@ -1,9 +1,13 @@
 import {
+    BelongsToMany,
     Column,
+    ForeignKey,
     Model,
     PrimaryKey,
     Table,
 } from 'sequelize-typescript';
+import TagModel from './Tag.model';
+import BlogTagModel from './BlogTag.model';
 
 @Table({
     tableName: 'blog'
@@ -11,6 +15,7 @@ import {
 class BlogModel extends Model<BlogModel> {
 
     @PrimaryKey
+    @ForeignKey(() => BlogTagModel)
     @Column({
         comment: '博客id',
     })
@@ -30,6 +35,9 @@ class BlogModel extends Model<BlogModel> {
 
     @Column
     create_time: Date;
+
+    @BelongsToMany(() => TagModel, () => BlogTagModel, 'blog_id')
+    tags: TagModel[];
 }
 
 export default BlogModel;
