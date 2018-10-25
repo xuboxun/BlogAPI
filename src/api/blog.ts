@@ -1,55 +1,48 @@
-import { Context } from 'koa';
-import { Sequelize } from 'sequelize-typescript';
+import {Context} from 'koa';
 import ResData from '../interface/ResData';
-import { BlogModel, BlogTagModel, TagModel } from '../models';
+import {BlogModel, TagModel, BlogTagModel} from '../models';
 
 
 const getBlogList = async (ctx: Context): Promise<ResData> => {
     const query = {
         pageSize: +ctx.query.pageSize || 10,
-        pageNum: +ctx.query.pageNum || 1
+        pageNum: +ctx.query.pageNum || 1,
+        type: ctx.query.type || ''
     };
-    let blogList = [],
-        total = 0;
+    let blogList: any[];
+    let total: number;
+
+    const where = query.type ? { type: query.type } : {};
 
     const queryBlogList = await BlogModel.findAll({
         attributes: ['id', 'name', 'title', 'type', 'create_time'],
         offset: query.pageSize * (query.pageNum - 1),
         limit: query.pageSize,
         order: [ ['create_time', 'DESC'] ],
-        where: {
-            type: 'tech'
-        },
+        where,
         include: [{
             model: TagModel,
             attributes: ['id', 'title', 'name']
         }]
     });
-
-    for(let i = 0; i < queryBlogList.length; i++) {
-        const item = queryBlogList[i];
-
-        blogList.push({
-            id: item.id,
-            name: item.name,
-            title: item.title,
-            type: item.type,
-            content: item.content,
-            createTime: item.create_time,
-            tags: item.tags
+    blogList = queryBlogList.map((item) => {
+        const blog = item.toJSON();
+        blog.tags = blog.tags.map((tag: any) => {
+            delete tag.BlogTagModel;
+            return tag;
         });
-    }
+        return blog;
+    });
+
     total = await BlogModel.count({
-        where: {
-            type: 'tech'
-        }
+        where
     });
     return {
         code: 200,
         msg: 'list',
         result: {
             items: blogList,
-            total: total
+            total
         }
     };
 };
@@ -62,27 +55,56 @@ const getBlogDetail = async (ctx: Context): Promise<ResData> => {
         attributes: ['id', 'name', 'title', 'type', 'content', 'create_time'],
         where: {
             id: query.id
-        }
+        },
+        include: [{
+            model: TagModel,
+            attributes: ['id', 'title', 'name']
+        }]
     });
-    const blogDetail = {
-        id: queryBlogDetail.id,
-        name: queryBlogDetail.name,
-        title: queryBlogDetail.title,
-        content: queryBlogDetail.content,
-        createTime:  queryBlogDetail.create_time,
-        tags: [
-            { id: 't1', name: 't1', title: '标签1' },
-            { id: 't2', name: 't2', title: '标签2' },
-        ]
-    };
-    const data = {
+    const blogDetail = queryBlogDetail.toJSON();
+    blogDetail.tags = blogDetail.tags.map((tag: any) => {
+        delete tag.BlogTagModel;
+        return tag;
+    });
+    return {
         code: 200,
         msg: 'getBlogDetail',
         result: blogDetail
     };
-    return data;
 };
 
+const addBlog = async (ctx: Context): Promise<ResData> => {
+    // @ts-ignore
+    const info: {
+        title: String;
+        name: String;
+        content: String;
+        type: String;
+        tagIds: String[];
+    } = ctx.request.body;
+
+    const queryAddBlog = await BlogModel.create({
+        id: +Date.now(),
+        title: info.title,
+        name: info.name,
+        content: info.content,
+        type: info.type,
+        createTime: Date.now()
+    });
+    // @ts-ignore
+    const queryAddBlogTag = await BlogTagModel.bulkCreate(info.tagIds.map((tagId) => {
+        return {
+            blog_id: queryAddBlog.id,
+            tag_id: tagId
+        };
+    }));
+
+    return {
+        code: 200,
+        msg: 'getBlogDetail',
+        result: 'ok'
+    };
+};
 
 const blogRouterConfig = [
     {
@@ -94,6 +116,11 @@ const blogRouterConfig = [
         method: 'get',
         url: '/blog/detail',
         handle: getBlogDetail
+    },
+    {
+        method: 'post',
+        url: '/blog/add',
+        handle: addBlog
     }
 ];
 export default blogRouterConfig;

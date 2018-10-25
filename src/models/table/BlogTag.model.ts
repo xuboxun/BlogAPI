@@ -1,4 +1,5 @@
 import {
+    AutoIncrement,
     Column,
     ForeignKey, HasMany,
     Model,
@@ -14,6 +15,7 @@ import TagModel from './Tag.model';
 class BlogTagModel extends Model<BlogTagModel> {
 
     @PrimaryKey
+    @AutoIncrement
     @Column
     id: string;
 
