@@ -1,6 +1,7 @@
 import {Context} from 'koa';
 import ResData from '../interface/ResData';
 import {BlogModel, TagModel, BlogTagModel} from '../models';
+import md5Id from '../util/md5Id';
 
 
 const getBlogList = async (ctx: Context): Promise<ResData> => {
@@ -76,15 +77,18 @@ const getBlogDetail = async (ctx: Context): Promise<ResData> => {
 const addBlog = async (ctx: Context): Promise<ResData> => {
     // @ts-ignore
     const info: {
-        title: String;
-        name: String;
-        content: String;
-        type: String;
-        tagIds: String[];
+        title: string;
+        name: string;
+        content: string;
+        type: string;
+        tagIds: string[];
     } = ctx.request.body;
 
     const queryAddBlog = await BlogModel.create({
-        id: +Date.now(),
+        id: md5Id({
+            type: 'blog',
+            name: info.name
+        }),
         title: info.title,
         name: info.name,
         content: info.content,
@@ -102,7 +106,7 @@ const addBlog = async (ctx: Context): Promise<ResData> => {
     return {
         code: 200,
         msg: 'getBlogDetail',
-        result: 'ok'
+        result: queryAddBlog
     };
 };
 

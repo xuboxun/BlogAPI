@@ -26,8 +26,11 @@ class TagModel extends Model<TagModel> {
     @Column
     description: string;
 
-    @Column
-    create_time: Date;
+    @Column({
+        field: 'create_time',
+        defaultValue: Date.now()
+    })
+    createTime: Date;
 
     @BelongsToMany(() => BlogModel, () => BlogTagModel, 'tag_id')
     blogs: BlogModel[];

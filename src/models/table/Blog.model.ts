@@ -6,8 +6,10 @@ import {
     PrimaryKey,
     Table,
 } from 'sequelize-typescript';
-import TagModel from './Tag.model';
+import BlogSerialModel from './BlogSerial.model';
 import BlogTagModel from './BlogTag.model';
+import SerialModel from './Serial.model';
+import TagModel from './Tag.model';
 
 @Table({
     tableName: 'blog'
@@ -41,6 +43,9 @@ class BlogModel extends Model<BlogModel> {
 
     @BelongsToMany(() => TagModel, () => BlogTagModel, 'blog_id')
     tags: TagModel[];
+
+    @BelongsToMany(() => SerialModel, () => BlogSerialModel, 'blog_id')
+    serial: SerialModel[];
 }
 
 export default BlogModel;

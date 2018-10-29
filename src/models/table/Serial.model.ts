@@ -1,9 +1,12 @@
 import {
-    Column,
+    BelongsToMany,
+    Column, ForeignKey,
     Model,
     PrimaryKey,
     Table,
 } from 'sequelize-typescript';
+import BlogModel from './Blog.model';
+import BlogSerialModel from './BlogSerial.model';
 
 @Table({
     tableName: 'serial'
@@ -11,6 +14,7 @@ import {
 class SerialModel extends Model<SerialModel> {
 
     @PrimaryKey
+    @ForeignKey(() => BlogModel)
     @Column({
         comment: '专栏id',
     })
@@ -25,8 +29,14 @@ class SerialModel extends Model<SerialModel> {
     @Column
     description: string;
 
-    @Column
-    create_time: Date;
+    @Column({
+        field: 'create_time',
+        defaultValue: Date.now()
+    })
+    createTime: Date;
+
+    @BelongsToMany(() => BlogModel, () => BlogSerialModel, 'serial_id')
+    blogs: BlogModel[];
 }
 
 export default SerialModel;
