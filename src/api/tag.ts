@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import ResData from '../interface/ResData';
-import { BlogModel, Op, TagModel } from '../models';
+import { BlogModel, Op, TagModel } from '../db';
 import md5Id from '../util/md5Id';
 
 const getTagList = async (ctx: Context): Promise<ResData> => {

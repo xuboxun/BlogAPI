@@ -10,7 +10,7 @@ const connect = async () => {
         database: config.db.database,
         username: config.db.username,
         password: config.db.password,
-        modelPaths: [__dirname + '/table']
+        modelPaths: [__dirname + '/models']
     });
 
     sequelize
@@ -23,7 +23,7 @@ const connect = async () => {
             console.log('    DATABASE %s', config.db.database);
             console.log('----------------------------------------');
         })
-        .catch(err => {
+        .catch((err) => {
             console.log('Unable to connect to the database:', err);
         });
 };

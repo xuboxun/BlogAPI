@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
-import { connect } from './models';
+import { connect } from './db';
 import router from './router';
 
 const app = new Koa();

@@ -1,6 +1,6 @@
 import {Context} from 'koa';
+import {BlogModel, BlogSerialModel, BlogTagModel, Op, SerialModel, TagModel} from '../db';
 import ResData from '../interface/ResData';
-import { BlogModel, BlogSerialModel, BlogTagModel, Op, TagModel } from '../models';
 import md5Id from '../util/md5Id';
 
 const getBlogList = async (ctx: Context): Promise<ResData> => {
@@ -20,17 +20,31 @@ const getBlogList = async (ctx: Context): Promise<ResData> => {
         limit: query.pageSize,
         order: [ ['createTime', 'DESC'] ],
         where,
-        include: [{
-            model: TagModel,
-            attributes: ['id', 'title', 'name']
-        }]
+        include: [
+            {
+                model: TagModel,
+                attributes: ['id', 'title', 'name']
+            },
+            {
+                model: SerialModel,
+                attributes: ['id', 'title', 'name']
+            }
+        ]
     });
     blogList = queryBlogList.map((item) => {
         const blog = item.toJSON();
-        blog.tags = blog.tags.map((tag: any) => {
-            delete tag.BlogTagModel;
-            return tag;
-        });
+        if (blog.type === 'serial') {
+            const serial = blog.serial[0];
+            delete serial.BlogSerialModel;
+            blog.serial = serial;
+            delete blog.tags;
+        } else {
+            blog.tags = blog.tags.map((tag: any) => {
+                delete tag.BlogTagModel;
+                return tag;
+            });
+            delete blog.serial;
+        }
         return blog;
     });
 
@@ -80,8 +94,8 @@ const addBlog = async (ctx: Context): Promise<ResData> => {
         name: string;
         content: string;
         type: string;
-        tagIds: string[] | undefined;
-        serialId: string | undefined;
+        tagIds?: string[];
+        serialId?: string;
     } = ctx.request.body;
 
     let resData = {

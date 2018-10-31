@@ -1,6 +1,6 @@
 import {Context} from 'koa';
 import ResData from '../interface/ResData';
-import { BlogModel, Op, SerialModel } from '../models';
+import { BlogModel, Op, SerialModel } from '../db';
 import md5Id from '../util/md5Id';
 
 const getSerialList = async (ctx: Context): Promise<ResData> => {
