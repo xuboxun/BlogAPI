@@ -19,7 +19,7 @@
         "indent": [true, "spaces", 4],
         "quotemark": [true, "single", "jsx-double"],
         "semicolon": [true, "always"],
-        "no-empty": false
-
+        "no-empty": false,
+        "member-access": false
     }
 }

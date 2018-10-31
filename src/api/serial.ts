@@ -1,10 +1,7 @@
 import {Context} from 'koa';
-import { Sequelize } from 'sequelize-typescript';
 import ResData from '../interface/ResData';
-import { SerialModel, BlogModel } from '../models';
+import { BlogModel, Op, SerialModel } from '../models';
 import md5Id from '../util/md5Id';
-
-const Op = Sequelize.Op;
 
 const getSerialList = async (ctx: Context): Promise<ResData> => {
     let serials: any = await SerialModel.findAll({
@@ -80,11 +77,10 @@ const addSerial = async (ctx: Context): Promise<ResData> => {
 };
 
 const checkExist = async (ctx: Context): Promise<ResData> => {
-    // @ts-ignore
-    const info: {
-        name: string;
-        title: string;
-    } = ctx.request.body;
+    const query = {
+        name: ctx.query.name,
+        title: ctx.query.title
+    };
     const resData = {
         code: 200,
         msg: 'checkSerialExist',
@@ -94,8 +90,8 @@ const checkExist = async (ctx: Context): Promise<ResData> => {
         attributes: ['id', 'name', 'title', 'description'],
         where: {
             [Op.or]: [
-                { name: info.name },
-                { title: info.title }
+                { name: query.name },
+                { title: query.title }
             ]
         }
     }).catch((err) => {
@@ -124,7 +120,7 @@ const serialRouterConfig = [
         handle: addSerial
     },
     {
-        method: 'post',
+        method: 'get',
         url: '/serial/checkExist',
         handle: checkExist
     }

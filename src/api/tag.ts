@@ -1,10 +1,7 @@
 import { Context } from 'koa';
-import { Sequelize } from 'sequelize-typescript';
 import ResData from '../interface/ResData';
-import {BlogModel, TagModel} from '../models';
+import { BlogModel, Op, TagModel } from '../models';
 import md5Id from '../util/md5Id';
-
-const Op = Sequelize.Op;
 
 const getTagList = async (ctx: Context): Promise<ResData> => {
     let tags: any = await TagModel.findAll({
@@ -41,7 +38,7 @@ const getTagDetail = async (ctx: Context): Promise<ResData> => {
             model: BlogModel,
             attributes: ['id', 'title', 'name', 'type']
         }]
-    }).catch(err => {
+    }).catch((err) => {
         console.log(err);
         resData.code = 500;
         resData.msg = 'getDetail error';
@@ -83,11 +80,10 @@ const addTag = async (ctx: Context): Promise<ResData> => {
 };
 
 const checkExist = async (ctx: Context): Promise<ResData> => {
-    // @ts-ignore
-    const info: {
-        name: string;
-        title: string;
-    } = ctx.request.body;
+    const query = {
+        name: ctx.query.name,
+        title: ctx.query.title
+    };
     const resData = {
         code: 200,
         msg: 'checkTagExist',
@@ -97,8 +93,8 @@ const checkExist = async (ctx: Context): Promise<ResData> => {
         attributes: ['id', 'name', 'title', 'description'],
         where: {
             [Op.or]: [
-                { name: info.name },
-                { title: info.title }
+                { name: query.name },
+                { title: query.title }
             ]
         }
     }).catch((err) => {
@@ -128,7 +124,7 @@ const tagRouterConfig = [
         handle: addTag
     },
     {
-        method: 'post',
+        method: 'get',
         url: '/tag/checkExist',
         handle: checkExist
     }

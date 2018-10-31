@@ -1,7 +1,9 @@
 import {
     AutoIncrement,
     Column,
-    ForeignKey, HasMany,
+    Comment,
+    Default,
+    ForeignKey,
     Model,
     PrimaryKey,
     Table,
@@ -16,16 +18,23 @@ class BlogSerialModel extends Model<BlogSerialModel> {
 
     @PrimaryKey
     @AutoIncrement
+    @Comment('自增id')
     @Column
-    id: string;
+    id: number;
 
-    @Column
     @ForeignKey(() => BlogModel)
-    blog_id: string;
+    @Comment('博客id')
+    @Column({
+        field: 'blog_id'
+    })
+    blogId: string;
 
-    @Column
     @ForeignKey(() => SerialModel)
-    serial_id: string;
+    @Comment('专栏id')
+    @Column({
+        field: 'serial_id'
+    })
+    serialId: string;
 
 }
 

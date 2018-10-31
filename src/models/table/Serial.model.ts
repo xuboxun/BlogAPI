@@ -1,6 +1,6 @@
 import {
     BelongsToMany,
-    Column, ForeignKey,
+    Column, Comment, ForeignKey,
     Model,
     PrimaryKey,
     Table,
@@ -15,20 +15,22 @@ class SerialModel extends Model<SerialModel> {
 
     @PrimaryKey
     @ForeignKey(() => BlogModel)
-    @Column({
-        comment: '专栏id',
-    })
+    @Column
     id: string;
 
+    @Comment('链接英文名')
     @Column
     name: string;
 
+    @Comment('中文名')
     @Column
     title: string;
 
+    @Comment('描述')
     @Column
     description: string;
 
+    @Comment('创建时间')
     @Column({
         field: 'create_time',
         defaultValue: Date.now()

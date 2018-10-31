@@ -1,6 +1,7 @@
 import {
     BelongsToMany,
     Column,
+    Comment,
     ForeignKey,
     Model,
     PrimaryKey,
@@ -18,23 +19,26 @@ class BlogModel extends Model<BlogModel> {
 
     @PrimaryKey
     @ForeignKey(() => BlogTagModel)
-    @Column({
-        comment: '博客id',
-    })
+    @Column
     id: string;
 
+    @Comment('链接英文名')
     @Column
     name: string;
 
+    @Comment('标题')
     @Column
     title: string;
 
+    @Comment('类型')
     @Column
     type: string;
 
+    @Comment('内容')
     @Column
     content: string;
 
+    @Comment('创建时间')
     @Column({
         field: 'create_time',
         defaultValue: Date.now()

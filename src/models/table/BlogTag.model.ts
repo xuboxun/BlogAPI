@@ -1,7 +1,8 @@
 import {
     AutoIncrement,
     Column,
-    ForeignKey, HasMany,
+    Comment,
+    ForeignKey,
     Model,
     PrimaryKey,
     Table,
@@ -16,16 +17,23 @@ class BlogTagModel extends Model<BlogTagModel> {
 
     @PrimaryKey
     @AutoIncrement
+    @Comment('自增id')
     @Column
-    id: string;
+    id: number;
 
-    @Column
     @ForeignKey(() => BlogModel)
-    blog_id: string;
+    @Comment('博客id')
+    @Column({
+        field: 'blog_id'
+    })
+    blogId: string;
 
-    @Column
     @ForeignKey(() => TagModel)
-    tag_id: string;
+    @Comment('标签id')
+    @Column({
+        field: 'tag_id'
+    })
+    tagId: string;
 
 }
 
