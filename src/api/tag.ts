@@ -1,6 +1,6 @@
 import { Context } from 'koa';
-import ResData from '../interface/ResData';
 import { BlogModel, Op, TagModel } from '../db';
+import ResData from '../interface/ResData';
 import md5Id from '../util/md5Id';
 
 const getTagList = async (ctx: Context): Promise<ResData> => {
@@ -22,7 +22,7 @@ const getTagList = async (ctx: Context): Promise<ResData> => {
 
 const getTagDetail = async (ctx: Context): Promise<ResData> => {
     const query = {
-        id: ctx.query.id
+        name: ctx.query.name
     };
     const resData = {
         code: 200,
@@ -32,12 +32,15 @@ const getTagDetail = async (ctx: Context): Promise<ResData> => {
     const tag = await TagModel.find({
         attributes: ['id', 'name', 'title', 'description', 'createTime'],
         where: {
-            id: query.id
+            name: query.name
         },
         include: [{
             model: BlogModel,
             attributes: ['id', 'title', 'name', 'type']
-        }]
+        }],
+        order: [
+            [{ model: BlogModel, as: 'blogs' }, 'createTime', 'DESC'],
+        ]
     }).catch((err) => {
         console.log(err);
         resData.code = 500;

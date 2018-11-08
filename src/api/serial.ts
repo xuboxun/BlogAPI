@@ -1,11 +1,29 @@
 import {Context} from 'koa';
-import ResData from '../interface/ResData';
 import { BlogModel, Op, SerialModel } from '../db';
+import ResData from '../interface/ResData';
 import md5Id from '../util/md5Id';
 
 const getSerialList = async (ctx: Context): Promise<ResData> => {
     let serials: any = await SerialModel.findAll({
-        attributes: ['id', 'name', 'title']
+        attributes: ['id', 'name', 'title', 'createTime'],
+        include: [{
+            model: BlogModel,
+            attributes: ['id', 'title', 'name', 'createTime'],
+        }],
+        order: [
+            ['createTime', 'desc'],
+            [ { model: BlogModel, as: 'blogs' }, 'createTime', 'DESC']
+        ]
+    });
+    // @ts-ignore
+    serials = serials.map((item) => {
+        const serial = item.toJSON();
+        serial.recent = serial.blogs[0] || null;
+        if (serial.recent.BlogSerialModel) {
+            delete serial.recent.BlogSerialModel;
+        }
+        delete serial.blogs;
+        return serial;
     });
     const total = await SerialModel.count();
     return {
@@ -20,7 +38,7 @@ const getSerialList = async (ctx: Context): Promise<ResData> => {
 
 const getSerialDetail = async (ctx: Context): Promise<ResData> => {
     const query = {
-        id: ctx.query.id
+        name: ctx.query.name
     };
     const resData = {
         code: 200,
@@ -30,12 +48,15 @@ const getSerialDetail = async (ctx: Context): Promise<ResData> => {
     const serial = await SerialModel.find({
         attributes: ['id', 'name', 'title', 'description', 'createTime'],
         where: {
-            id: query.id
+            name: query.name
         },
         include: [{
             model: BlogModel,
             attributes: ['id', 'title', 'name', 'type']
-        }]
+        }],
+        order: [
+            [{ model: BlogModel, as: 'blogs' }, 'createTime', 'DESC'],
+        ]
     }).catch((err) => {
         console.log(err);
         resData.code = 500;

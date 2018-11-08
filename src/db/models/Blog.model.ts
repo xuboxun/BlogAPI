@@ -6,6 +6,7 @@ import {
     Model,
     PrimaryKey,
     Table,
+    Unique
 } from 'sequelize-typescript';
 import BlogSerialModel from './BlogSerial.model';
 import BlogTagModel from './BlogTag.model';
@@ -22,6 +23,7 @@ class BlogModel extends Model<BlogModel> {
     @Column
     id: string;
 
+    @Unique
     @Comment('链接英文名')
     @Column
     name: string;

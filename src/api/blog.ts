@@ -63,12 +63,12 @@ const getBlogList = async (ctx: Context): Promise<ResData> => {
 
 const getBlogDetail = async (ctx: Context): Promise<ResData> => {
     const query = {
-        id: ctx.query.id
+        name: ctx.query.name
     };
     const queryBlogDetail = await BlogModel.find({
         attributes: ['id', 'name', 'title', 'type', 'content', 'createTime'],
         where: {
-            id: query.id
+            name: query.name
         },
         include: [{
             model: TagModel,
@@ -169,6 +169,10 @@ const addBlog = async (ctx: Context): Promise<ResData> => {
 
     return resData;
 };
+
+//const getMostView = async (ctx: Context): Promise<ResData> => {
+//    
+//}
 
 const checkExist = async (ctx: Context): Promise<ResData> => {
     const query = {
