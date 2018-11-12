@@ -47,6 +47,13 @@ class BlogModel extends Model<BlogModel> {
     })
     createTime: Date;
 
+    @Comment('更新时间')
+    @Column({
+        field: 'update_time',
+        defaultValue: null
+    })
+    updateTime: Date;
+
     @BelongsToMany(() => TagModel, () => BlogTagModel, 'blog_id')
     tags: TagModel[];
 

@@ -70,16 +70,30 @@ const getBlogDetail = async (ctx: Context): Promise<ResData> => {
         where: {
             name: query.name
         },
-        include: [{
-            model: TagModel,
-            attributes: ['id', 'title', 'name']
-        }]
+        include: [
+            {
+                model: TagModel,
+                attributes: ['id', 'title', 'name']
+            },
+            {
+                model: SerialModel,
+                attributes: ['id', 'title', 'name']
+            }
+        ]
     });
     const blogDetail = queryBlogDetail.toJSON();
-    blogDetail.tags = blogDetail.tags.map((tag: any) => {
-        delete tag.BlogTagModel;
-        return tag;
-    });
+    if (blogDetail.type === 'serial') {
+        const serial = blogDetail.serial[0];
+        delete serial.BlogSerialModel;
+        blogDetail.serial = serial;
+        delete blogDetail.tags;
+    } else {
+        blogDetail.tags = blogDetail.tags.map((tag: any) => {
+            delete tag.BlogTagModel;
+            return tag;
+        });
+        delete blogDetail.serial;
+    }
     return {
         code: 200,
         msg: 'getBlogDetail',
@@ -128,8 +142,8 @@ const addBlog = async (ctx: Context): Promise<ResData> => {
     if (info.type === 'serial') {
         await BlogSerialModel.create({
             // @ts-ignore
-            blog_id: queryAddBlog.id,
-            serial_id: info.serialId
+            blogId: queryAddBlog.id,
+            serialId: info.serialId
         }).catch((err) => {
             console.log(err);
             BlogModel.destroy({
@@ -148,8 +162,8 @@ const addBlog = async (ctx: Context): Promise<ResData> => {
         await BlogTagModel.bulkCreate(info.tagIds.map((tagId) => {
             return {
                 // @ts-ignore
-                blog_id: queryAddBlog.id,
-                tag_id: tagId
+                blogId: queryAddBlog.id,
+                tagId
             };
         })).catch((err) => {
             console.log(err);
@@ -170,8 +184,84 @@ const addBlog = async (ctx: Context): Promise<ResData> => {
     return resData;
 };
 
+const updateBlog = async (ctx: Context): Promise<ResData> => {
+    // @ts-ignore
+    const info: {
+        id: string,
+        title: string;
+        name: string;
+        content: string;
+        type: string;
+        tagIds?: string[];
+        serialId?: string;
+    } = ctx.request.body;
+
+    const resData = {
+        code: 200,
+        msg: 'update blog success',
+        result: {}
+    };
+
+    await BlogTagModel.destroy({
+        where: {
+            blogId: info.id
+        }
+    });
+    await BlogSerialModel.destroy({
+        where: {
+            blogId: info.id
+        }
+    });
+    let updateRelate = null;
+    if (info.type === 'serial') {
+        updateRelate = await BlogSerialModel.create({
+            blogId: info.id,
+            serialId: info.serialId
+        }).catch((err) => {
+            console.log(err);
+            resData.code = 500;
+            resData.msg = 'add BlogSerialModel error';
+            return null;
+        });
+    } else {
+        updateRelate = await BlogTagModel.bulkCreate(info.tagIds.map((tagId) => {
+            return {
+                blogId: info.id,
+                tagId
+            };
+        })).catch((err) => {
+            console.log(err);
+            resData.code = 500;
+            resData.msg = 'add BlogTagModel error';
+            return null;
+        });
+    }
+
+    let queryUpdate = null;
+    if (updateRelate) {
+        queryUpdate = await BlogModel.update({
+            name: info.name,
+            title: info.title,
+            content: info.content,
+            type: info.type
+        }, {
+            where: {
+                id: info.id
+            }
+        }).catch((err) => {
+            console.log(err);
+            resData.code = 500;
+            resData.msg = 'update blog err';
+            return null;
+        });
+    }
+    resData.result = queryUpdate;
+
+    return resData;
+};
+
 //const getMostView = async (ctx: Context): Promise<ResData> => {
-//    
+//
 //}
 
 const checkExist = async (ctx: Context): Promise<ResData> => {
@@ -221,6 +311,11 @@ const blogRouterConfig = [
         method: 'get',
         url: '/blog/checkExist',
         handle: checkExist
+    },
+    {
+        method: 'post',
+        url: '/blog/update',
+        handle: updateBlog
     }
 ];
 export default blogRouterConfig;
