@@ -1,6 +1,7 @@
 import { Context } from 'koa';
 import { BlogModel, Op, TagModel } from '../db';
 import ResData from '../interface/ResData';
+import checkLogin from '../util/checkLogin';
 import md5Id from '../util/md5Id';
 
 const getTagList = async (ctx: Context): Promise<ResData> => {
@@ -53,6 +54,13 @@ const getTagDetail = async (ctx: Context): Promise<ResData> => {
 
 
 const addTag = async (ctx: Context): Promise<ResData> => {
+    if (!checkLogin(ctx)) {
+        return {
+            code: 401,
+            msg: 'not login',
+            result: null
+        };
+    }
     // @ts-ignore
     const info: {
         name: string;
@@ -83,6 +91,13 @@ const addTag = async (ctx: Context): Promise<ResData> => {
 };
 
 const checkExist = async (ctx: Context): Promise<ResData> => {
+    if (!checkLogin(ctx)) {
+        return {
+            code: 401,
+            msg: 'not login',
+            result: null
+        };
+    }
     const query = {
         name: ctx.query.name,
         title: ctx.query.title

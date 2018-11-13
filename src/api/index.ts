@@ -1,5 +1,6 @@
 import Archives from './archives';
 import Blog from './blog';
+import Login from './login';
 import Search from './search';
 import Serial from './serial';
 import Tag from './tag';
@@ -9,5 +10,6 @@ export default [
     ...Serial,
     ...Tag,
     ...Search,
-    ...Archives
+    ...Archives,
+    ...Login
 ];

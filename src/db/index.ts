@@ -7,6 +7,7 @@ export { default as BlogTagModel } from './models/BlogTag.model';
 export { default as SerialModel } from './models/Serial.model';
 export { default as TagModel } from './models/Tag.model';
 export { default as BlogSerialModel } from './models/BlogSerial.model';
+export { default as AdminModel } from './models/Admin.model';
 export { Sequelize } from 'sequelize-typescript';
 export { Op };
 
