@@ -13,7 +13,7 @@ const sessionConfig = {
     /** 'session' will result in a cookie that expires when session/browser is closed */
     /** Warning: If a session cookie is stolen, this cookie will never expire */
     key: 'blog-admin-session', /** (string) cookie key (default is koa:sess) */
-    maxAge: 86400000, /** (number || 'session') maxAge in ms (default is 1 days) */
+    maxAge: 18000000, // 5h /** (number || 'session') maxAge in ms (default is 1 days) */
     autoCommit: true, /** (boolean) automatically commit headers (default true) */
     overwrite: true, /** (boolean) can overwrite or not (default true) */
     httpOnly: true, /** (boolean) httpOnly or not (default true) */

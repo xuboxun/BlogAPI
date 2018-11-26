@@ -27,7 +27,7 @@ const getTagDetail = async (ctx: Context): Promise<ResData> => {
     };
     const resData = {
         code: 200,
-        msg: 'getTag',
+        msg: 'getTagDetail',
         result: {},
     };
     const tag = await TagModel.find({
@@ -90,6 +90,43 @@ const addTag = async (ctx: Context): Promise<ResData> => {
     return resData;
 };
 
+const updateTag = async (ctx: Context): Promise<ResData> => {
+    if (!checkLogin(ctx)) {
+        return {
+            code: 401,
+            msg: 'not login',
+            result: null
+        };
+    }
+    // @ts-ignore
+    const info: {
+        id: string,
+        name: string;
+        title: string;
+        description: string;
+    } = ctx.request.body;
+    const resData = {
+        code: 200,
+        msg: 'editTag',
+        result: 'true'
+    };
+    resData.result = await TagModel.update({
+        name: info.name,
+        title: info.title,
+        description: info.description,
+    }, {
+        where: {
+            id: info.id
+        }
+    }).catch((err) => {
+        console.log(err);
+        resData.code = 500;
+        resData.msg = 'edit tag err';
+        return null;
+    });
+    return resData;
+};
+
 const checkExist = async (ctx: Context): Promise<ResData> => {
     if (!checkLogin(ctx)) {
         return {
@@ -140,6 +177,11 @@ const tagRouterConfig = [
         method: 'post',
         url: '/tag/add',
         handle: addTag
+    },
+    {
+        method: 'post',
+        url: '/tag/edit',
+        handle: updateTag
     },
     {
         method: 'get',

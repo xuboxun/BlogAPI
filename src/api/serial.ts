@@ -1,5 +1,5 @@
 import {Context} from 'koa';
-import { BlogModel, Op, SerialModel } from '../db';
+import {BlogModel, Op, SerialModel, TagModel} from '../db';
 import ResData from '../interface/ResData';
 import checkLogin from '../util/checkLogin';
 import md5Id from '../util/md5Id';
@@ -20,7 +20,7 @@ const getSerialList = async (ctx: Context): Promise<ResData> => {
     serials = serials.map((item) => {
         const serial = item.toJSON();
         serial.recent = serial.blogs[0] || null;
-        if (serial.recent.BlogSerialModel) {
+        if (serial.recent && serial.recent.BlogSerialModel) {
             delete serial.recent.BlogSerialModel;
         }
         delete serial.blogs;
@@ -105,6 +105,43 @@ const addSerial = async (ctx: Context): Promise<ResData> => {
     return resData;
 };
 
+const editSerial = async (ctx: Context): Promise<ResData> => {
+    if (!checkLogin(ctx)) {
+        return {
+            code: 401,
+            msg: 'not login',
+            result: null
+        };
+    }
+    // @ts-ignore
+    const info: {
+        id: string,
+        name: string;
+        title: string;
+        description: string;
+    } = ctx.request.body;
+    const resData = {
+        code: 200,
+        msg: 'editSerial',
+        result: 'true'
+    };
+    resData.result = await SerialModel.update({
+        name: info.name,
+        title: info.title,
+        description: info.description,
+    }, {
+        where: {
+            id: info.id
+        }
+    }).catch((err) => {
+        console.log(err);
+        resData.code = 500;
+        resData.msg = 'edit serial err';
+        return null;
+    });
+    return resData;
+};
+
 const checkExist = async (ctx: Context): Promise<ResData> => {
     if (!checkLogin(ctx)) {
         return {
@@ -154,6 +191,11 @@ const serialRouterConfig = [
         method: 'post',
         url: '/serial/add',
         handle: addSerial
+    },
+    {
+        method: 'post',
+        url: '/serial/edit',
+        handle: editSerial
     },
     {
         method: 'get',

@@ -1,10 +1,12 @@
 import {Context} from 'koa';
+import * as md5 from 'md5';
+import * as svgCaptcha from 'svg-captcha';
 import { AdminModel } from '../db';
 import ResData from '../interface/ResData';
 import checkLogin from '../util/checkLogin';
 
 const authentication = async (ctx: Context): Promise<ResData> => {
-    let resData = {
+    const resData = {
         code: 200,
         msg: 'get authentication',
         result: {}
@@ -35,11 +37,20 @@ const login = async (ctx: Context): Promise<ResData> => {
         result: {}
     };
 
+    if (info.code !== ctx.session.verifyCode) {
+        resData = {
+            code: 400,
+            msg: 'login failed, wrong verify code',
+            result: null
+        };
+        return resData;
+    }
+
     let queryFind = await AdminModel.find({
         attributes: ['id', 'account', 'email', 'createTime', 'updateTime'],
         where: {
             account: info.account,
-            password: info.password
+            password: md5(info.password)
         }
     }).catch((err) => {
         console.log(err);
@@ -67,6 +78,21 @@ const logout = async (ctx: Context): Promise<ResData> => {
     };
 };
 
+const getCapture = async (ctx: Context): Promise<ResData> => {
+        const captcha = svgCaptcha.create({
+            color: true,
+            width: 150,
+            height: 35,
+            fontSize: 40
+        });
+        ctx.session.verifyCode = captcha.text.toLowerCase();
+        return {
+            code: 200,
+            msg: 'getCapture success',
+            result: captcha.data
+        };
+};
+
 
 
 const loginRouterConfig = [
@@ -84,6 +110,11 @@ const loginRouterConfig = [
         method: 'get',
         url: '/admin/logout',
         handle: logout
+    },
+    {
+        method: 'get',
+        url: '/getCapture',
+        handle: getCapture
     }
 ];
 export default loginRouterConfig;
