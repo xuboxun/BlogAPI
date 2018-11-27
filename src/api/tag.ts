@@ -6,7 +6,8 @@ import md5Id from '../util/md5Id';
 
 const getTagList = async (ctx: Context): Promise<ResData> => {
     let tags: any = await TagModel.findAll({
-        attributes: ['id', 'name', 'title']
+        attributes: ['id', 'name', 'title', 'createTime'],
+        order: [['createTime', 'DESC']]
     });
     const total = await TagModel.count();
     const data = {

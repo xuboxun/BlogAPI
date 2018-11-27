@@ -18,7 +18,11 @@ apis.forEach((api) => {
 });
 
 router.get('*', (ctx: Context, next: Function) => {
-    ctx.body = 'this is 404 page';
+    ctx.body = {
+        code: 404,
+        msg: 'api address not found',
+        result: null
+    };
 });
 
 export default router;
