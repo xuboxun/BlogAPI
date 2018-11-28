@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import config from '../../config/index';
+import config from '../config/index';
 
 const connect = async () => {
     const sequelize = await new Sequelize({
