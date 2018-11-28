@@ -8,6 +8,8 @@
     },
     "env_production" : {
        "NODE_ENV": "production"
-    }
+    },
+    "error_file"  : "/data/logs/blog/err.log",
+    "out_file"    : "/data/logs/blog/out.log",
   }]
 }
