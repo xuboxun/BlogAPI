@@ -1,5 +1,5 @@
 import {Context} from 'koa';
-import { VersionModel } from '../db';
+import {BlogModel, VersionModel} from '../db';
 import ResData from '../interface/ResData';
 import checkLogin from '../util/checkLogin';
 
@@ -10,7 +10,7 @@ const versionList = async (ctx: Context): Promise<ResData> => {
         result: {}
     };
     const versions = await VersionModel.findAll({
-        attributes: ['version', 'description', 'createTime'],
+        attributes: ['id', 'version', 'description', 'createTime'],
         order: [ ['createTime', 'DESC'] ],
     }).catch((err) => {
         console.log(err);
@@ -59,6 +59,72 @@ const addVersion = async (ctx: Context): Promise<ResData> => {
     return resData;
 };
 
+const updateVersion = async (ctx: Context): Promise<ResData> => {
+    if (!checkLogin(ctx)) {
+        return {
+            code: 401,
+            msg: 'not login',
+            result: null
+        };
+    }
+    // @ts-ignore
+    const info: {
+        id: number,
+        version: string;
+        description: string;
+    } = ctx.request.body;
+    const resData = {
+        code: 200,
+        msg: 'update version success',
+        result: {}
+    };
+    resData.result = await VersionModel.update({
+        version: info.version,
+        description: info.description
+    }, {
+        where: {
+            id: info.id
+        }
+    }).catch((err) => {
+        console.log(err);
+        resData.code = 500;
+        resData.msg = 'update version error';
+        return null;
+    });
+    return resData;
+};
+
+const deleteVersion = async (ctx: Context): Promise<ResData> => {
+    if (!checkLogin(ctx)) {
+        return {
+            code: 401,
+            msg: 'not login',
+            result: null
+        };
+    }
+    // @ts-ignore
+    const info: {
+        id: number,
+    } = ctx.request.body;
+    const resData = {
+        code: 200,
+        msg: 'delete version success',
+        result: {}
+    };
+    resData.result = VersionModel.destroy({
+        where: {
+            // @ts-ignore
+            id: info.id
+        }
+    }).catch((err) => {
+        console.log(err);
+        resData.code = 500;
+        resData.msg = 'delete version error';
+        return null;
+    });
+    return resData;
+};
+
 const SystemRouterConfig = [
     {
         method: 'get',
@@ -69,6 +135,16 @@ const SystemRouterConfig = [
         method: 'post',
         url: '/system/version',
         handle: addVersion
+    },
+    {
+        method: 'put',
+        url: '/system/version',
+        handle: updateVersion
+    },
+    {
+        method: 'delete',
+        url: '/system/version',
+        handle: deleteVersion
     }
 ];
 export default SystemRouterConfig;

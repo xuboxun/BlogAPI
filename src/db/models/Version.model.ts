@@ -13,7 +13,7 @@ class VersionModel extends Model<VersionModel> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    id: string;
+    id: number;
 
     @Comment('版本号')
     @Unique
