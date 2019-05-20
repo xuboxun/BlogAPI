@@ -38,7 +38,7 @@ const getTagDetail = async (ctx: Context): Promise<ResData> => {
         },
         include: [{
             model: BlogModel,
-            attributes: ['id', 'title', 'name', 'type']
+            attributes: ['id', 'title', 'name', 'type', 'createTime']
         }],
         order: [
             [{ model: BlogModel, as: 'blogs' }, 'createTime', 'DESC'],
