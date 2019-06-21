@@ -17,9 +17,11 @@ const getFoodMenus = async (ctx: Context): Promise<ResData> => {
         res = await axios.get(`http://crystalpot.cn/menus/${query.day}`);
 
         if (res.status === 200) {
-            const html = res.data.replace(/([\s\S]*)<body>([\s\S]*)<\/body>([\s\S]*)/, (match: String, p1: String, p2: String) => {
-                return p2;
-            }).replace('&nbsp;', '');
+            const html = res.data
+                .replace(/[\s\S]*?(<div[^<>]*?class="m-cnt"[\s\S]*?>[\s\S]*?)<div[\s\S]*?class="m-count">[\s\S]*/, (match: String, p1: String) => {
+                    return p1;
+                }).replace('&nbsp;', '');
+
             resData.result = {
                 content: html
             };
