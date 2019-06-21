@@ -5,6 +5,7 @@ import Search from './search';
 import Serial from './serial';
 import Tag from './tag';
 import System from './system';
+import Apps from './apps';
 
 export default [
     ...Blog,
@@ -13,5 +14,6 @@ export default [
     ...Search,
     ...Archives,
     ...Login,
-    ...System
+    ...System,
+    ...Apps,
 ];
